@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validador de CPF</title>
+    <style>
+        body{
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        h1{
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Validador de CPF</h1>
+    <br>
+    <br>
+    <input id="txtCPF"
+           type="number" 
+           placeholder="Informe o CPF" 
+           value="" 
+           autofocus>
+    <br>
+    <br>
+    <button type="button" class="btn">Validar</button>
+
+
+    <script>
+        const txtCPF = document.getElementById("txtCPF");
+        const btnValidar = document.querySelector(".btn");
+
+        const euCliquei = (evt) => {
+            console.log(evt.target);
+        };
+
+        txtCPF.addEventListener('change', (evt)=>{
+            console.log(evt.target.value)
+        })
+
+        txtCPF.addEventListener('keypress', euCliquei);
+        btnValidar.addEventListener("click", euCliquei);
+        
+        btnValidar.addEventListener("click", () => {
+            let cpf = txtCPF.value;
+            if (validarCpf(cpf)) {
+                alert("CPF Válido");
+            } else {
+                alert("CPF Inválido");
+            }
+            txtCPF.value = "";
+        });
+
+        function validarCpf(cpf) {
+            cpf = cpf.replace(/[^\d]+/g, ''); // Remove caracteres não numéricos
+            if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) 
+                return false; // Verifica se tem 11 dígitos ou se todos os dígitos são iguais
+
+            let soma = 0;
+            
+            // cpf = 078335741 98
+
+            for (let i = 0; i < 9; i++) {
+                soma += parseInt(cpf.charAt(i)) * (10 - i);
+                // 0 * 9 + 7 * 8 + 8 * 7 + 3 * 6 + 3 * 5 + 5 * 4 + 7 * 3 + 4 * 2 + 1 * 1
+
+            }
+
+            //soma = 195 % 11 = 8
+            // 11 - 8 = 3
+            let resto = 11 - (soma % 11);
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.charAt(9))) return false;
+
+            soma = 0;
+            for (let i = 0; i < 10; i++) {
+                soma += parseInt(cpf.charAt(i)) * (11 - i);
+            }
+            resto = 11 - (soma % 11);
+            if (resto === 10 || resto === 11) resto = 0;
+            if (resto !== parseInt(cpf.charAt(10))) return false;
+
+            return true;
+        }
+    </script>
+</body>
+
+</html>
